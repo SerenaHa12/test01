@@ -1,0 +1,8 @@
+
+
+TASK A
+Trong chương trình A, A đang truy vấn toàn bộ bảng, đếm tổng số lượng bản ghi rồi lấy 20/tổng còn lại sau mỗi vòng lặp.
+-> tạo ra overhead khi truy vấn
+
+Hướng giải quyết:
+Thay vì lấy 20 bản như A thì dựa vào RAM 4GB, còn trống 256MB của server để maximum lượng bản ghi máy xử lý được ( ví dụ 1000 hoặc 10000)
