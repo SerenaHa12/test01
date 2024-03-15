@@ -2,6 +2,26 @@
 
 TASK A
 Trong chương trình A, A đang truy vấn toàn bộ bảng, đếm tổng số lượng 6tr bản ghi rồi lấy 20/tổng còn lại sau mỗi vòng lặp.
+Kém hiệu quả vì:
+    - Truy vấn nhiều
+        dẫn đến một số lượng lớn truy vấn CSDL (6.000.000 / 20 = 300.000 truy vấn) 
+        truy vấn đều có độ trễ mạng (kể cả khi chạy trên local)
+
+    - Tăng offset:
+        Khi nProcessed tăng, OFFSET trong truy vấn SQL (SELECT * FROM wikipedia_article LIMIT nProcessed, 20) cũng tăng.
+        ->  với mỗi đợt tiếp theo, MYSQL phải bỏ qua số lượng càng nhiều để đến bản ghi tiếp theo. 
+            Việc bỏ qua các hàng sẽ tăng thêm thời gian đáng kể, đặc biệt là OFFSET tăng lên lớn 
+            vì cơ bản MYSQL sẽ đọc qua các hàng để loại bỏ chúng cho đến điểm mong muốn.
+
+    - Sử dụng index không hiệu quả:
+         Truy vấn không sử dụng ORDER BY, có nghĩa là đang sử dụng thứ tự tự nhiên của bảng. 
+         Tuy nhiên, khi OFFSET lớn thì MySQL phải làm việc nhiều hơn để bỏ qua các hàng trước đó.
+
+     - Quản lý bộ nhớ: 
+        Mặc dù  hàm process_article không tiêu tốn bộ nhớ đáng kể, nhưng 
+        việc liên tục ghi  các dữ liệu nhỏ và cách quản lý bộ nhớ trong vòng lặp 
+        có thể dẫn đến việc sử dụng bộ nhớ không hiệu quả, đặc biệt là trên hệ thống có bộ nhớ hạn chế.
+
 -> tạo ra overhead khi truy vấn
 
 Hướng giải quyết:
@@ -11,16 +31,4 @@ ________________________________________________________________________________
 
 TASK B:
 Viết chương trình B 
-numRowSet = mysql_query( “SELECT COUNT(id) FROM wikipedia_article” );
-nRows = numRowSet[0][“Count(id)”];	// get number of rows in the table
-nProcessed = 0; // number of processed rows
-while( nProcessed < nRows ) {
-    strQuery = “SELECT * FROM wikipedia_article LIMIT   ”
-    strQuery += nProcessed  +  “,  10000” ;
-    recordSet = mysql_query( strQuery );
-    nArticles = mysql_num_rows( recordSet ); // get number of rows
-    // process all rows received from the query result
-    for( i = 0; i < nArticles; i++ )
-    processs_article( recordSet[i] );
-        nProcessed += nArticles;
-}
+
