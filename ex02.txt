@@ -1,8 +1,26 @@
 
 
 TASK A
-Trong chương trình A, A đang truy vấn toàn bộ bảng, đếm tổng số lượng bản ghi rồi lấy 20/tổng còn lại sau mỗi vòng lặp.
+Trong chương trình A, A đang truy vấn toàn bộ bảng, đếm tổng số lượng 6tr bản ghi rồi lấy 20/tổng còn lại sau mỗi vòng lặp.
 -> tạo ra overhead khi truy vấn
 
 Hướng giải quyết:
 Thay vì lấy 20 bản như A thì dựa vào RAM 4GB, còn trống 256MB của server để maximum lượng bản ghi máy xử lý được ( ví dụ 1000 hoặc 10000)
+
+_________________________________________________________________________________________________________________________________________
+
+TASK B:
+Viết chương trình B 
+numRowSet = mysql_query( “SELECT COUNT(id) FROM wikipedia_article” );
+nRows = numRowSet[0][“Count(id)”];	// get number of rows in the table
+nProcessed = 0; // number of processed rows
+while( nProcessed < nRows ) {
+    strQuery = “SELECT * FROM wikipedia_article LIMIT   ”
+    strQuery += nProcessed  +  “,  10000” ;
+    recordSet = mysql_query( strQuery );
+    nArticles = mysql_num_rows( recordSet ); // get number of rows
+    // process all rows received from the query result
+    for( i = 0; i < nArticles; i++ )
+    processs_article( recordSet[i] );
+        nProcessed += nArticles;
+}

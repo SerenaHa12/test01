@@ -7,6 +7,8 @@ for (let i = 0; i < 20; i++) {
 }
 
 const start = performance.now();
+
+// insert to list
 const insert = (list, current, count = 0) => {
   const tail = list.pop();
   let temp = current.next;
@@ -16,6 +18,7 @@ const insert = (list, current, count = 0) => {
     insert(list, temp, count + 1);
   }
 };
+
 const end = performance.now();
 console.log("time: ", end - start);
 insert(linkedList, linkedList.head);

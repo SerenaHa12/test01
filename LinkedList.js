@@ -45,6 +45,7 @@ export class SinglyLinkedList {
     }
   }
 }
+
 export class Node {
   constructor(val) {
     this.val = val;
